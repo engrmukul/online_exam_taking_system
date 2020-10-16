@@ -9,25 +9,22 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * Class Attribute
  * @package App\Models
  */
-class Exam extends Model
+class QuestionPaper extends Model
 {
     use SoftDeletes;
     /**
      * @var string
      */
-    protected $table = 'exams';
+    protected $table = 'question_papers';
 
     /**
      * @var array
      */
     protected $fillable = [
-        'subject_id',
-        'exam_title',
-        'exam_date',
-        'noq',
-        'start_time',
-        'end_time',
-        'exam_status',
+        'exam_id',
+        'question_set',
+        'question_ids',
+        'generate_by',
         'status',
         'created_at',
         'updated_at',
@@ -44,9 +41,9 @@ class Exam extends Model
 
     ];
 
-    public function subject()
+    public function exam()
     {
-        return $this->belongsTo('App\Models\Subject');
+        return $this->hasOne(Exam::class,'id','exam_id');
     }
 
 }

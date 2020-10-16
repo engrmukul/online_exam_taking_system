@@ -49,9 +49,30 @@
 
                             <spn>ANSWER ( Select radio button for correct answer )</spn> <br/>
                             <hr>
-                            <div class="form-group row">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="is_correct" id="exampleRadios1" value="1">
+                            <div class="form-group">
+                                <div class="input-group m-b">
+                                    <div class="input-group-prepend"><span class="input-group-addon"><input type="radio" name="is_correct" value="1" required></span></div>
+                                    <textarea name="answer[]" class="form-control" placeholder="Enter Answer" required></textarea>
+                                </div>
+                                <div class="input-group m-b">
+                                    <div class="input-group-prepend"><span class="input-group-addon"><input type="radio" name="is_correct" value="2" required></span></div>
+                                    <textarea name="answer[]" class="form-control" placeholder="Enter Answer" required></textarea>
+                                </div>
+                                <div class="input-group m-b">
+                                    <div class="input-group-prepend"><span class="input-group-addon"><input type="radio" name="is_correct" value="3" required></span></div>
+                                    <textarea name="answer[]" class="form-control" placeholder="Enter Answer" required></textarea>
+                                </div>
+                                <div class="input-group m-b">
+                                    <div class="input-group-prepend"><span class="input-group-addon"><input type="radio" name="is_correct" value="4" required></span></div>
+                                    <textarea name="answer[]" class="form-control" placeholder="Enter Answer" required></textarea>
+                                </div>
+                                <div class="input-group m-b">
+                                    <div class="input-group-prepend"><span class="input-group-addon"><input type="radio" name="is_correct" value="5" required></span></div>
+                                    <textarea name="answer[]" class="form-control" placeholder="Enter Answer" required></textarea>
+                                </div>
+
+                                {{--<div class="form-check">
+                                    <input class="form-check-input" type="radio" name="is_correct" id="exampleRadios1" value="1" required>
                                     <label class="form-check-label" for="defaultCheck1">
                                         <textarea name="answer[]" class="form-control" placeholder="Enter Answer" required></textarea>
                                     </label>
@@ -87,7 +108,7 @@
                                     <label class="form-check-label" for="defaultCheck1">
                                         <textarea name="answer[]" class="form-control" placeholder="Enter Answer" required></textarea>
                                     </label>
-                                </div>
+                                </div>--}}
 
                             </div>
 

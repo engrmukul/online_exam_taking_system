@@ -33,6 +33,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('exams/get-data', 'ExamController@getData');
     Route::get('exams/restore', 'ExamController@restore')->name('exams.restore');
 
+    Route::resource('question-papers', 'QuestionPaperController', ['except' => ['show']]);
+    Route::get('question-papers/get-data', 'QuestionPaperController@getData');
+    Route::get('question-papers/restore', 'QuestionPaperController@restore')->name('question-papers.restore');
+
 });
 
 
