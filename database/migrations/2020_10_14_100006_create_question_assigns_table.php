@@ -18,7 +18,7 @@ class CreateQuestionAssignsTable extends Migration
         Schema::create('question_assigns', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->foreignId('exam_id')->references('id')->on('exams')->onDelete('cascade');
-            $table->foreignId('student_id')->references('id')->on('students')->onDelete('cascade');
+            $table->foreignId('student_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('question_paper_id')->references('id')->on('question_papers')->onDelete('cascade');
             $this->commonColumns($table);
         });

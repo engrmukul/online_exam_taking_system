@@ -19,7 +19,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/change-password', 'HomeController@changePassword')->name('change-password');
     Route::put('/reset-password', 'HomeController@resetPassword')->name('reset-password');
 
-    //Route::resource('users', 'UserController', ['except' => ['show']]);
+    Route::resource('users', 'UserController', ['except' => ['show']]);
+    Route::get('users/get-data', 'UserController@getData');
+
 
     Route::resource('subjects', 'SubjectController', ['except' => ['show']]);
     Route::get('subjects/get-data', 'SubjectController@getData');
@@ -36,6 +38,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('question-papers', 'QuestionPaperController', ['except' => ['show']]);
     Route::get('question-papers/get-data', 'QuestionPaperController@getData');
     Route::get('question-papers/restore', 'QuestionPaperController@restore')->name('question-papers.restore');
+
+    Route::resource('question-assigns', 'QuestionAssignController', ['except' => ['show']]);
+    Route::get('question-assigns/get-data', 'QuestionAssignController@getData');
+    Route::get('question-assigns/restore', 'QuestionAssignController@restore')->name('question-assigns.restore');
+
+    Route::resource('tests', 'TestController', ['except' => ['show']]);
+    Route::get('tests/get-data', 'TestController@getData');
 
 });
 

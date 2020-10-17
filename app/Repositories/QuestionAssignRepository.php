@@ -2,22 +2,23 @@
 
 namespace App\Repositories;
 
-use App\Contracts\QuestionPaperContract;
+use App\Contracts\QuestionAssignContract;
 use App\Models\Answer;
 use App\Models\Question;
+use App\Models\QuestionAssign;
 use App\Models\QuestionPaper;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Doctrine\Instantiator\Exception\InvalidArgumentException;
 use Yajra\DataTables\Facades\DataTables;
 
-class QuestionPaperRepository extends BaseRepository implements QuestionPaperContract
+class QuestionAssignRepository extends BaseRepository implements QuestionAssignContract
 {
     /**
-     * QuestionPaperRepository constructor.
-     * @param QuestionPaper $model
+     * QuestionAssignRepository constructor.
+     * @param QuestionAssign $model
      */
-    public function __construct(QuestionPaper $model)
+    public function __construct(QuestionAssign $model)
     {
         parent::__construct($model);
         $this->model = $model;
@@ -29,18 +30,18 @@ class QuestionPaperRepository extends BaseRepository implements QuestionPaperCon
      * @param array $columns
      * @return mixed
      */
-    public function listQuestionPaper(string $order = 'id', string $sort = 'desc', array $columns = ['*'])
+    public function listQuestionAssign(string $order = 'id', string $sort = 'desc', array $columns = ['*'])
     {
         //return $this->all($columns, $order, $sort);
         $query = $this->all($columns, $order, $sort);
-        return Datatables::of($query)->with('exam')
+        return Datatables::of($query)->with('exam','student','questionPaper')
             ->addColumn('action', function ($row) {
                 $actions = '';
 
-                $actions.= '<a class="btn btn-primary btn-xs float-left mr-1" href="' . route('question-papers.edit', [$row->id]) . '" title="QuestionPaper Edit"><i class="fa fa-pencil"></i> '. trans("common.edit") . '</a>';
+                $actions.= '<a class="btn btn-primary btn-xs float-left mr-1" href="' . route('question-assigns.edit', [$row->id]) . '" title="QuestionAssign Edit"><i class="fa fa-pencil"></i> '. trans("common.edit") . '</a>';
 
                 $actions.= '
-                    <form action="'.route('question-papers.destroy', [$row->id]).'" method="POST">
+                    <form action="'.route('question-assigns.destroy', [$row->id]).'" method="POST">
                         <input type="hidden" name="_method" value="delete">
                         <input type="hidden" name="_token" value="'.csrf_token().'">
                         <button type="submit" class="btn btn-danger btn-xs"><i class="fa fa-remove"></i> '. trans("common.delete") . '</button>
@@ -52,6 +53,12 @@ class QuestionPaperRepository extends BaseRepository implements QuestionPaperCon
             ->editColumn('exam', function ($row) {
                 return $row->exam->exam_title;
             })
+            ->editColumn('student', function ($row) {
+                return $row->student->username;
+            })
+            ->editColumn('question_paper', function ($row) {
+                return $row->questionPaper->question_set;
+            })
             ->make(true);
     }
 
@@ -59,12 +66,10 @@ class QuestionPaperRepository extends BaseRepository implements QuestionPaperCon
      * @param int $id
      * @return mixed
      */
-    public function findQuestionPaperById(int $id)
+    public function findQuestionAssignById(int $id)
     {
         try {
-            //return $this->findOneOrFail($id);
-            return QuestionPaper::with('answers')->findOrFail($id);
-
+            return $this->findOneOrFail($id);
 
         } catch (ModelNotFoundException $e) {
 
@@ -75,38 +80,38 @@ class QuestionPaperRepository extends BaseRepository implements QuestionPaperCon
 
     /**
      * @param array $params
-     * @return QuestionPaper|mixed
+     * @return QuestionAssign|mixed
      */
-    public function createQuestionPaper(array $params)
+    public function createQuestionAssign(array $params)
     {
         try {
             $collection = collect($params);
 
             //dd($collection);
 
-            //SAVE SET
-            $setArray = array();
+            //SAVE
+            $questionPapers = QuestionPaper::select('id')->where('exam_id', $collection['exam_id'])->get();
 
-            foreach ($collection['question_set'] as $key => $set){
+            $assignArray = array();
 
-                if($collection['generate_by'] == 'custom'){
-                    $randQuestion  = $collection['question_ids'];
-                    shuffle($randQuestion);
-                }
+            foreach ($collection['student_id'] as $key => $student){
 
-                $setData['exam_id'] = $collection['exam_id'];
-                $setData['question_set'] = $set ;
-                $setData['question_ids'] = $collection['generate_by'] == 'custom' ? implode(",", $randQuestion) : implode(",", (array_column(Question::select('id')->where('subject_id', $collection['subject_id'])->get()->random($collection['totalquestions'])->toArray(), 'id')));
-                $setData['generate_by'] = $collection['generate_by'] ;
-                $setData['created_by'] = auth()->user()->id;
-                $setData['created_at'] = date('Y-m-d');
+                $questionPaperIndex = array_rand($questionPapers->toArray(), 1);
 
-                $setArray[] = $setData;
+                $questionPaperId = $questionPapers->toArray()[$questionPaperIndex]['id'];
+
+                $assignData['exam_id'] = $collection['exam_id'];
+                $assignData['student_id'] = $student ;
+                $assignData['question_paper_id'] = $questionPaperId ;
+                $assignData['created_by'] = auth()->user()->id;
+                $assignData['created_at'] = date('Y-m-d');
+
+                $assignArray[] = $assignData;
            }
 
-            $questionPaper = QuestionPaper::insert($setArray);
+            $questionAssign = QuestionAssign::insert($assignArray);
 
-            return $questionPaper;
+            return $questionAssign;
 
         } catch (QueryException $exception) {
             throw new InvalidArgumentException($exception->getMessage());
@@ -117,9 +122,9 @@ class QuestionPaperRepository extends BaseRepository implements QuestionPaperCon
      * @param array $params
      * @return mixed
      */
-    public function updateQuestionPaper(array $params)
+    public function updateQuestionAssign(array $params)
     {
-        $question = $this->findQuestionPaperById($params['id']);
+        $question = $this->findQuestionAssignById($params['id']);
 
         $collection = collect($params)->except('_token');
 
@@ -154,9 +159,9 @@ class QuestionPaperRepository extends BaseRepository implements QuestionPaperCon
      * @param $id
      * @return bool|mixed
      */
-    public function deleteQuestionPaper($id, array $params)
+    public function deleteQuestionAssign($id, array $params)
     {
-        $question = $this->findQuestionPaperById($id);
+        $question = $this->findQuestionAssignById($id);
 
         $question->delete();
 

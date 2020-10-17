@@ -7,5 +7,11 @@
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://localhost:3306/onlineexam</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="aspire@localhost" uuid="189759be-1747-4c89-9520-0d3995ea4fcf">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:3306/aspire</jdbc-url>
+    </data-source>
   </component>
 </project>

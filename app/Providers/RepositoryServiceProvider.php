@@ -3,14 +3,18 @@
 namespace App\Providers;
 
 use App\Contracts\ExamContract;
+use App\Contracts\QuestionAssignContract;
 use App\Contracts\QuestionContract;
 use App\Contracts\QuestionPaperContract;
 use App\Contracts\SubjectContract;
+use App\Contracts\TestContract;
 use App\Contracts\UserContract;
 use App\Repositories\ExamRepository;
+use App\Repositories\QuestionAssignRepository;
 use App\Repositories\QuestionPaperRepository;
 use App\Repositories\QuestionRepository;
 use App\Repositories\SubjectRepository;
+use App\Repositories\TestRepository;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\UserRepository;
 
@@ -21,6 +25,8 @@ class RepositoryServiceProvider extends ServiceProvider
         QuestionContract::class => QuestionRepository::class,
         ExamContract::class => ExamRepository::class,
         QuestionPaperContract::class => QuestionPaperRepository::class,
+        QuestionAssignContract::class => QuestionAssignRepository::class,
+        TestContract::class => TestRepository::class,
         UserContract::class => UserRepository::class,
     ];
 

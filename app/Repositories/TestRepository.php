@@ -2,20 +2,20 @@
 
 namespace App\Repositories;
 
-use App\Models\User;
-use App\Contracts\UserContract;
+use App\Contracts\TestContract;
+use App\Models\Test;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Doctrine\Instantiator\Exception\InvalidArgumentException;
 use Yajra\DataTables\Facades\DataTables;
 
-class UserRepository extends BaseRepository implements UserContract
+class TestRepository extends BaseRepository implements TestContract
 {
     /**
-     * UserRepository constructor.
-     * @param User $model
+     * TestRepository constructor.
+     * @param Test $model
      */
-    public function __construct(User $model)
+    public function __construct(Test $model)
     {
         parent::__construct($model);
         $this->model = $model;
@@ -27,20 +27,21 @@ class UserRepository extends BaseRepository implements UserContract
      * @param array $columns
      * @return mixed
      */
-    public function listUser(string $order = 'id', string $sort = 'desc', array $columns = ['*'])
+    public function listTest(string $order = 'id', string $sort = 'desc', array $columns = ['*'])
     {
-        $query = $this->model->select();
+        //return $this->all($columns, $order, $sort);
+        $query = $this->all($columns, $order, $sort);
         return Datatables::of($query)
             ->addColumn('action', function ($row) {
                 $actions = '';
 
-                $actions.= '<a class="btn btn-primary btn-xs float-left mr-1" href="' . route('users.edit', [$row->id]) . '" title="User Edit"><i class="fa fa-pencil"></i>'. trans("common.edit") . '</a>';
+                $actions.= '<a class="btn btn-primary btn-xs float-left mr-1" href="' . route('tests.edit', [$row->id]) . '" title="Test Edit"><i class="fa fa-pencil"></i> '. trans("common.edit") . '</a>';
 
                 $actions.= '
-                    <form action="'.route('users.destroy', [$row->id]).'" method="POST">
+                    <form action="'.route('tests.destroy', [$row->id]).'" method="POST">
                         <input type="hidden" name="_method" value="delete">
                         <input type="hidden" name="_token" value="'.csrf_token().'">
-                        <button type="submit" class="btn btn-danger btn-xs"><i class="fa fa-remove"></i>'. trans("common.delete") . '</button>
+                        <button type="submit" class="btn btn-danger btn-xs"><i class="fa fa-remove"></i> '. trans("common.delete") . '</button>
                     </form>
                 ';
 
@@ -53,7 +54,7 @@ class UserRepository extends BaseRepository implements UserContract
      * @param int $id
      * @return mixed
      */
-    public function findUserById(int $id)
+    public function findTestById(int $id)
     {
         try {
             return $this->findOneOrFail($id);
@@ -67,24 +68,22 @@ class UserRepository extends BaseRepository implements UserContract
 
     /**
      * @param array $params
-     * @return User|mixed
+     * @return Test|mixed
      */
-    public function createUser(array $params)
+    public function createTest(array $params)
     {
         try {
             $collection = collect($params);
 
             $created_by = auth()->user()->id;
+            
+            $merge = $collection->merge(compact('created_by'));
 
-            $shop_id = auth()->user()->shop_id;
+            $subject = new Test($merge->all());
 
-            $merge = $collection->merge(compact('created_by', 'shop_id'));
+            $subject->save();
 
-            $user = new User($merge->all());
-
-            $user->save();
-
-            return $user;
+            return $subject;
 
         } catch (QueryException $exception) {
             throw new InvalidArgumentException($exception->getMessage());
@@ -95,9 +94,9 @@ class UserRepository extends BaseRepository implements UserContract
      * @param array $params
      * @return mixed
      */
-    public function updateUser(array $params)
+    public function updateTest(array $params)
     {
-        $user = $this->findUserById($params['id']);
+        $subject = $this->findTestById($params['id']);
 
         $collection = collect($params)->except('_token');
 
@@ -105,20 +104,20 @@ class UserRepository extends BaseRepository implements UserContract
 
         $merge = $collection->merge(compact('updated_by'));
 
-        $user->update($merge->all());
+        $subject->update($merge->all());
 
-        return $user;
+        return $subject;
     }
 
     /**
      * @param $id
      * @return bool|mixed
      */
-    public function deleteUser($id, array $params)
+    public function deleteTest($id, array $params)
     {
-        $user = $this->findUserById($id);
+        $subject = $this->findTestById($id);
 
-        $user->delete();
+        $subject->delete();
 
         $collection = collect($params)->except('_token');
 
@@ -126,8 +125,16 @@ class UserRepository extends BaseRepository implements UserContract
 
         $merge = $collection->merge(compact('deleted_by'));
 
-        $user->update($merge->all());
+        $subject->update($merge->all());
 
-        return $user;
+        return $subject;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function restore()
+    {
+        return $this->restoreOnlyTrashed();
     }
 }

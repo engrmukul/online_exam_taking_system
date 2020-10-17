@@ -54,13 +54,10 @@
                             <div class="form-group row">
 
                                 @forelse($question->answers as $index => $answer)
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="is_correct" @if($answer->is_correct == 1) checked @endif id="exampleRadios1" value="{{$index + 1}}">
-                                        <label class="form-check-label" for="defaultCheck1">
-                                            <textarea name="answer[]" class="form-control" placeholder="Enter Answer" required>{{$answer->answer}}</textarea>
-                                        </label>
+                                    <div class="input-group m-b">
+                                        <div class="input-group-prepend"><span class="input-group-addon"><input type="radio" name="is_correct"  @if($answer->is_correct == 1) checked @endif value="{{$index + 1}}"  required></span></div>
+                                        <textarea name="answer[]" class="form-control" placeholder="Enter Answer" required>{{$answer->answer}}</textarea>
                                     </div>
-                                    &nbsp;
                                 @empty
                                 @endforelse
 

@@ -30,8 +30,8 @@
               <li class="active"><a href="{{ route('questions.index') }}"><i class="fa fa-book"></i>{{ trans('sidebar.question')}}</a></li>
               <li class="active"><a href="{{ route('exams.index') }}"><i class="fa fa-exchange"></i>{{ trans('sidebar.exam')}}</a></li>
               <li class="active"><a href="{{ route('question-papers.index') }}"><i class="fa fa-file"></i>{{ trans('sidebar.exam_paper')}}</a></li>
-              <li class="active"><a href="{{ route('home') }}"><i class="fa fa-arrow-circle-o-right"></i>{{ trans('sidebar.question_assign')}}</a></li>
-              <li class="active"><a href="{{ route('home') }}"><i class="fa fa-puzzle-piece"></i>{{ trans('sidebar.test')}}</a></li>
+              <li class="active"><a href="{{ route('question-assigns.index') }}"><i class="fa fa-arrow-circle-o-right"></i>{{ trans('sidebar.question_assign')}}</a></li>
+              <li class="active"><a href="{{ route('tests.index') }}"><i class="fa fa-puzzle-piece"></i>{{ trans('sidebar.test')}}</a></li>
 
         </ul>
 

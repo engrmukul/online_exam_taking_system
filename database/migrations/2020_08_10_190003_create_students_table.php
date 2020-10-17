@@ -17,17 +17,10 @@ class CreateStudentsTable extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->uuid('student_id');
-            $table->string('username',50)->unique();
-            $table->string('email',50)->unique()->nullable();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->enum('status', ['active','inactive'])->default('active');
-            $table->timestamps();
-            $table->softDeletes();
-            $table->foreignId('updated_by')->nullable()->references('id')->on('users')->onDelete('cascade');
-            $table->foreignId('deleted_by')->nullable()->references('id')->on('users')->onDelete('cascade');
-        });
+            $table->foreignId('student_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('full_name',200);
+            $table->text('others_info');
+          });
     }
 
     /**
