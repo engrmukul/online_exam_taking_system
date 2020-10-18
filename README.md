@@ -1,7 +1,6 @@
 
 ###### Command
 ## git pull
-## git checkout -b mybranch
 ## composer update
 ## cp .env.example .env
 ## php artisan key:generate
