@@ -15,7 +15,7 @@
                     </div>
                     <div class="ibox-content">
                         <!---FORM--->
-                        <form role="form" method="post" action="{{route( strtolower($pageTitle) . '.store')}}">
+                        <form role="form" method="post" action="{{route( strtolower($pageTitle) . '.store')}}" enctype="multipart/form-data">
                             @csrf
                                 
                             <!---Subject--->
@@ -37,7 +37,7 @@
                             <!---Question--->
                             <div class="form-group">
                                 <label for="ques" class="font-bold">{{ trans('question.question')}}</label>
-                                <textarea name="question" class="form-control" placeholder="Enter Question" required></textarea>
+                                <textarea name="question" class="form-control" placeholder="Enter Question" required>{{old('question')}}</textarea>
                                 <span class="form-text m-b-none text-danger"> @error('name') {{ $message }} @enderror </span>
                             </div>
 
@@ -45,6 +45,7 @@
                             <div class="form-group">
                                 <label for="ques" class="font-bold">{{ trans('question.image')}}</label>
                                 <input type="file" name="image" class="form-control">
+                                <span class="form-text m-b-none text-danger"> @error('image') {{ $message }} @enderror </span>
                             </div>
 
                             <spn>ANSWER ( Select radio button for correct answer )</spn> <br/>

@@ -30,6 +30,7 @@ class QuestionUpdateFormRequest extends FormRequest
         }
 
         return [
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'subject_id' =>  'required',
             'question' => [
                 'required',

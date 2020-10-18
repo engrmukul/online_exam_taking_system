@@ -72,6 +72,12 @@ class QuestionController extends BaseController
     {
         $params = $request->except('_token');
 
+        if ($request->hasFile('image')) {
+            $imageName = time().'.'.$request->image->extension();
+            $request->image->move(public_path('upload/questions'), $imageName);
+            $params['image'] = $imageName;
+        }
+
         $question = $this->questionRepository->createQuestion($params);
 
         if (!$question) {
@@ -102,6 +108,12 @@ class QuestionController extends BaseController
     public function update(QuestionUpdateFormRequest $request, Question $questionModel)
     {
         $params = $request->except('_token');
+
+        if ($request->hasFile('image')) {
+            $imageName = time().'.'.$request->image->extension();
+            $request->image->move(public_path('upload/questions'), $imageName);
+            $params['image'] = $imageName;
+        }
 
         $question = $this->questionRepository->updateQuestion($params);
 

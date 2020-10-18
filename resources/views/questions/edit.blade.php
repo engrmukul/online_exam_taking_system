@@ -15,7 +15,7 @@
                     </div>
                     <div class="ibox-content">
                         <!---FORM--->
-                        <form role="form" method="post" action="{{route( strtolower($pageTitle) . '.update', $question->id )}}">
+                        <form role="form" method="post" action="{{route( strtolower($pageTitle) . '.update', $question->id )}}" enctype="multipart/form-data">
                             @method('PUT')
                             @csrf
                             
@@ -47,6 +47,7 @@
                             <div class="form-group">
                                 <label for="ques" class="font-bold">{{ trans('question.image')}}</label>
                                 <input type="file" name="image" class="form-control">
+                                <span class="form-text m-b-none text-danger"> @error('image') {{ $message }} @enderror </span>
                             </div>
 
                             <spn>ANSWER ( Select radio button for correct answer )</spn> <br/>

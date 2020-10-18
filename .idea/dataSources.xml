@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="onlineexam@localhost" uuid="82535161-714b-429e-b9a4-40ceecfd4a0e">
+    <data-source source="LOCAL" name="oets@localhost" uuid="0b17b909-e620-42f4-875b-1619f47b1cec">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:3306/onlineexam</jdbc-url>
-    </data-source>
-    <data-source source="LOCAL" name="aspire@localhost" uuid="189759be-1747-4c89-9520-0d3995ea4fcf">
-      <driver-ref>mysql.8</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:3306/aspire</jdbc-url>
+      <jdbc-url>jdbc:mysql://localhost:3306/oets</jdbc-url>
     </data-source>
   </component>
 </project>
