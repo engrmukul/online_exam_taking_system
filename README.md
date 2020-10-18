@@ -3,7 +3,7 @@
 ## git pull
 ## git checkout -b mybranch
 ## composer update
-## php artisan .env.example .env
+## cp .env.example .env
 ## php artisan key:generate
 ## create database poricalok
 ## config database access in .env file
