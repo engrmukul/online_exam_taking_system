@@ -54,6 +54,22 @@ Auth::routes();
 Route::get('/', 'HomeController@index')->name('home');
 
 
+
+Route::group(['middleware' => 'role:developer'], function() {
+
+    Route::get('/permission/add', [App\Http\Controllers\PermissionController::class, 'create']);
+    Route::get('/permission/store', [App\Http\Controllers\PermissionController::class, 'store']);
+
+    Route::get('/admin', function() {
+
+        return 'Welcome Admin';
+
+    });
+
+});
+
+
+
 //FALLBACK ROUTE
 Route::fallback(function () {
     return response()->view('error.404');
