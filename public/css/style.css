@@ -9553,3 +9553,72 @@ body.md-skin {
     margin: 0;
   }
 }
+
+
+
+/****************TEST PAGE*************************/
+/* question css */
+.questionWrapper{
+  padding: 20px 80px !important;
+  background: #e0e0e0;
+}
+
+.wrapper.border-bottom.white-bg.page-heading.borderBottom{
+  border-bottom: 1px dashed #1c84c6 !important;
+  padding: 0 10px 10px 10px;
+  background: #c7c7c7;
+}
+.wrapper.border-bottom.white-bg.page-heading.borderBottom h1{
+  margin-top: 0 !important;
+}
+
+/*.question form .row .col-sm-6.pl-4{
+      padding-left: 34px !important;
+}
+*/
+input#check {
+  margin-right: 7px;
+}
+
+.footer.bg-dark .row p{
+  margin-top: -2px !important;
+  margin-bottom: -5px !important;
+}
+
+input#check:focus{
+  outline:none;
+}
+img {
+  width: 200px;
+  height: 100px;
+  opacity: 1;
+  overflow: hidden;
+  border-radius: 4px;
+  object-fit: cover;
+  display: inline-block;
+  margin: 0 0 10px 30px;
+}
+
+/*FIXED MENU*/
+nav.navbar-default.navbar-static-side {
+  position: fixed;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+}
+.wrapper.border-bottom.white-bg.page-heading.borderBottom{
+  transition:1s;
+}
+
+.sticky {
+  position: fixed;
+  width: 85%;
+  top: 0;
+  opacity: 1 !important;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.sticky.wrapper.border-bottom.white-bg.page-heading.borderBottom {
+  padding: 0 10px 0px 10px;
+}

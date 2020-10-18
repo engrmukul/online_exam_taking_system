@@ -33,7 +33,7 @@ class QuestionPaperController extends BaseController
     {
         $this->setPageTitle('question-papers', 'QuestionPapers List');
         $data = [
-            'tableHeads' => [ trans('questionPaper.SN'), trans('questionPaper.exam'), trans('questionPaper.question_set'), trans('questionPaper.generate_by'), trans('questionPaper.status'), trans('questionPaper.action')],
+            'tableHeads' => [ trans('questionPaper.SN'), trans('questionPaper.exam'), trans('questionPaper.question_set'), trans('questionPaper.generate_by'), trans('questionPaper.status')],
             'dataUrl' => 'question-papers/get-data',
             'columns' => [
                 ['data' => 'id', 'name' => 'id'],
@@ -41,7 +41,7 @@ class QuestionPaperController extends BaseController
                 ['data' => 'question_set', 'name' => 'question_set'],
                 ['data' => 'generate_by', 'name' => 'generate_by'],
                 ['data' => 'status', 'name' => 'status'],
-                ['data' => 'action', 'name' => 'action', 'orderable' => false]
+                //['data' => 'action', 'name' => 'action', 'orderable' => false]
             ],
         ];
         return view('questionPapers.index', $data);
@@ -63,7 +63,7 @@ class QuestionPaperController extends BaseController
     {
         $this->setPageTitle('question-papers', 'Create QuestionPaper');
 
-        $exams = Exam::all();
+        $exams = Exam::where('exam_status', 'not_start')->get();
 
         $data = [
             'tableHeads' => [ trans('question.SN'), trans('question.subject'), trans('question.question'), trans('question.status')],
@@ -107,7 +107,7 @@ class QuestionPaperController extends BaseController
 
         $questionPaper = $this->questionPaperRepository->findQuestionPaperById($id);
 
-        $exams = Exam::all();
+        $exams = Exam::where('exam_status', 'not_start')->get();
 
         return view('question-papers.edit', compact('questionPaper','exams'));
     }

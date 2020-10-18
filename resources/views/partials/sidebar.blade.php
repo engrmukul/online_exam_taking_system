@@ -3,7 +3,7 @@
         <ul class="nav metismenu" id="side-menu">
             <li class="nav-header">
                 <div class="dropdown profile-element">
-                    <img alt="image" class="rounded-circle" src="{{ asset('img/profile_small.jpg') }}" />
+                    <h2 class="text-center text-light">OETS</h2>
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <span class="block m-t-xs font-bold">{{ auth()->user()->name . '( '. str_replace(' ', '', ucwords(str_replace('_', ' ', trans(auth()->user()->role)))).' )' }}</span>
                     </a>
@@ -21,7 +21,7 @@
                     </ul>
                 </div>
                 <div class="logo-element">
-                    PAV1
+                    OETS
                 </div>
             </li>
 

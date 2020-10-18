@@ -13,8 +13,6 @@
                             <a style="margin-top: -8px;" href="{{ route( strtolower($pageTitle) . '.create') }}" class="btn btn-primary"><i
                                     class="fa fa-plus"></i> {{ trans('common.create')}}</a>
 
-                            <a style="margin-top: -8px;" href="{{ route( strtolower($pageTitle) . '.restore') }}" class="btn btn-primary"><i
-                                    class="fa fa-window-restore"></i> {{ trans('common.restore')}}</a>
                         </div>
                     </div>
                     <div class="ibox-content">

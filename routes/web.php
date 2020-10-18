@@ -53,7 +53,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('question-assigns/restore', 'QuestionAssignController@restore')->name('question-assigns.restore');
 
     Route::resource('tests', 'TestController', ['except' => ['show']]);
-    Route::get('tests/get-data', 'TestController@getData');
+    Route::get('exam-finish/{examId?}', 'TestController@examFinish');
+    Route::get('exam-expired/{examId?}', 'TestController@examExpired');
+    Route::post('save-answer', 'TestController@saveAnswer')->name('save-answer');
 
 });
 

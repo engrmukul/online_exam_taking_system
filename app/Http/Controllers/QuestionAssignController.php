@@ -34,15 +34,15 @@ class QuestionAssignController extends BaseController
     {
         $this->setPageTitle('question-assigns', 'QuestionAssigns List');
         $data = [
-            'tableHeads' => [ trans('questionAssign.SN'), trans('questionAssign.exam'), trans('questionAssign.student'),trans('questionAssign.question_paper'), trans('questionAssign.status'), trans('questionAssign.action')],
+            'tableHeads' => [ trans('questionAssign.SN'), trans('questionAssign.exam'), trans('questionAssign.student'),trans('questionAssign.question_paper')],
             'dataUrl' => 'question-assigns/get-data',
             'columns' => [
                 ['data' => 'id', 'name' => 'id'],
                 ['data' => 'exam', 'name' => 'exam'],
                 ['data' => 'student', 'name' => 'student'],
                 ['data' => 'question_paper', 'name' => 'question_paper'],
-                ['data' => 'status', 'name' => 'status'],
-                ['data' => 'action', 'name' => 'action', 'orderable' => false]
+                //['data' => 'status', 'name' => 'status'],
+               // ['data' => 'action', 'name' => 'action', 'orderable' => false]
             ],
         ];
         return view('questionAssigns.index', $data);
@@ -64,7 +64,13 @@ class QuestionAssignController extends BaseController
     {
         $this->setPageTitle('question-assigns', 'Create QuestionAssign');
 
-        $exams = QuestionPaper::with('exam')->groupBy('exam_id')->get();
+        $query = QuestionPaper::with('exam');
+
+        $query->whereHas('exam', function ($q) {
+            $q->where('exam_status', 'not_start');
+        });
+
+        $exams = $query->groupBy('exam_id')->get();
 
         $data = [
             'tableHeads' => [ trans('user.SN'), trans('user.name'), trans('user.mobile'), trans('user.username'), trans('user.email')],

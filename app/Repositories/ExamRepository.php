@@ -34,16 +34,17 @@ class ExamRepository extends BaseRepository implements ExamContract
         return Datatables::of($query)->with('subject')
             ->addColumn('action', function ($row) {
                 $actions = '';
+                if($row->exam_status == 'not_start'){
+                    $actions.= '<a class="btn btn-primary btn-xs float-left mr-1" href="' . route('exams.edit', [$row->id]) . '" title="Exam Edit"><i class="fa fa-pencil"></i> '. trans("common.edit") . '</a>';
 
-                $actions.= '<a class="btn btn-primary btn-xs float-left mr-1" href="' . route('exams.edit', [$row->id]) . '" title="Exam Edit"><i class="fa fa-pencil"></i> '. trans("common.edit") . '</a>';
-
-                $actions.= '
+                    $actions.= '
                     <form action="'.route('exams.destroy', [$row->id]).'" method="POST">
                         <input type="hidden" name="_method" value="delete">
                         <input type="hidden" name="_token" value="'.csrf_token().'">
                         <button type="submit" class="btn btn-danger btn-xs"><i class="fa fa-remove"></i> '. trans("common.delete") . '</button>
                     </form>
                 ';
+                }
 
                 return $actions;
             })

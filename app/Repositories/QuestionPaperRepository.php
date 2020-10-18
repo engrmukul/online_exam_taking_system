@@ -35,7 +35,7 @@ class QuestionPaperRepository extends BaseRepository implements QuestionPaperCon
         $query = $this->all($columns, $order, $sort);
         return Datatables::of($query)->with('exam')
             ->addColumn('action', function ($row) {
-                $actions = '';
+                /*$actions = '';
 
                 $actions.= '<a class="btn btn-primary btn-xs float-left mr-1" href="' . route('question-papers.edit', [$row->id]) . '" title="QuestionPaper Edit"><i class="fa fa-pencil"></i> '. trans("common.edit") . '</a>';
 
@@ -47,7 +47,7 @@ class QuestionPaperRepository extends BaseRepository implements QuestionPaperCon
                     </form>
                 ';
 
-                return $actions;
+                return $actions;*/
             })
             ->editColumn('exam', function ($row) {
                 return $row->exam->exam_title;

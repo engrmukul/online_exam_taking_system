@@ -28,7 +28,7 @@
                             <!---{{ $pageTitle }} CONTROL BUTTON--->
                             <div class="form-group row">
                                 <div class="col-sm-4 col-sm-offset-2">
-                                    <button class="btn btn-success" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>{{ trans('common.create')}}</button>
+                                    <button class="btn btn-success" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>{{ trans('common.update')}}</button>
                                 </div>
                             </div>
                         </form>

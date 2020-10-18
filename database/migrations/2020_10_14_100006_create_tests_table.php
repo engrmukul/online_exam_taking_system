@@ -18,7 +18,7 @@ class CreateTestsTable extends Migration
         Schema::create('tests', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->foreignId('exam_id')->references('id')->on('exams')->onDelete('cascade');
-            $table->foreignId('student_id')->references('id')->on('students')->onDelete('cascade');
+            $table->foreignId('student_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('question_id')->references('id')->on('questions')->onDelete('cascade');
             $table->foreignId('answer_id')->references('id')->on('answers')->onDelete('cascade');
             $table->enum('status', ['on_going','interrupted','finished'])->default('on_going');
