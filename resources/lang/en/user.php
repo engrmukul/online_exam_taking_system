@@ -4,11 +4,11 @@ return [
 
     //LIST PAGE
     'SN' => 'SN',
-    'name' => 'name',
-    'mobile' => 'mobile',
-    'username' => 'উজারনেম',
-    'email' => 'email',
-    'role' => 'role',
+    'name' => 'Name',
+    'mobile' => 'Mobile',
+    'username' => 'User Name',
+    'email' => 'Email',
+    'role' => 'Role',
     'status' => 'status',
     'action' => 'action',
 

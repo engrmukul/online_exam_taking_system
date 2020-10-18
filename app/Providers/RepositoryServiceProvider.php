@@ -28,6 +28,8 @@ class RepositoryServiceProvider extends ServiceProvider
         QuestionAssignContract::class => QuestionAssignRepository::class,
         TestContract::class => TestRepository::class,
         UserContract::class => UserRepository::class,
+        RoleContract::class => RoleRepository::class,
+        PermissionContract::class => PermissionRepository::class,
     ];
 
     /**

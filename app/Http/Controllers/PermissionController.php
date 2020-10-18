@@ -1,109 +1,139 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Permission;
-use App\Models\Role;
-use App\Models\User;
+use App\Models\Subject;
 use Illuminate\Http\Request;
+use App\Contracts\PermissionContract;
+use App\Http\Requests\PermissionStoreFormRequest;
+use App\Http\Requests\PermissionUpdateFormRequest;
 
-class PermissionController extends Controller
+class PermissionController extends BaseController
 {
-    public function __construct()
+    /**
+     * @var PermissionContract
+     */
+    protected $permissionRepository;
+
+    /**
+     * PermissionController constructor.
+     * @param PermissionContract $permissionRepository
+     */
+    public function __construct(PermissionContract $permissionRepository)
     {
         $this->middleware('auth');
+        $this->permissionRepository = $permissionRepository;
     }
 
-   /* public function Permission()
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function index()
     {
-    	$dev_permission = Permission::where('slug','create-tasks')->first();
-		$manager_permission = Permission::where('slug', 'edit-users')->first();
+        $this->setPageTitle('Permissions', 'Permissions List');
+        $data = [
+            'tableHeads' => [ trans('permission.SN'), trans('permission.name'), trans('permission.slug'), trans('permission.status'), trans('permission.action')],
+            'dataUrl' => 'permissions/get-data',
+            'columns' => [
+                ['data' => 'id', 'name' => 'id'],
+                ['data' => 'name', 'name' => 'name'],
+                ['data' => 'slug', 'name' => 'slug'],
+                ['data' => 'status', 'name' => 'status'],
+                ['data' => 'action', 'name' => 'action', 'orderable' => false]
+            ],
+        ];
+        return view('permissions.index', $data);
+    }
 
-		//RoleTableSeeder.php
-		$dev_role = new Role();
-		$dev_role->slug = 'developer';
-		$dev_role->name = 'Front-end Developer';
-		$dev_role->save();
-		$dev_role->permissions()->attach($dev_permission);
-
-		$manager_role = new Role();
-		$manager_role->slug = 'manager';
-		$manager_role->name = 'Assistant Manager';
-		$manager_role->save();
-		$manager_role->permissions()->attach($manager_permission);
-
-		$dev_role = Role::where('slug','developer')->first();
-		$manager_role = Role::where('slug', 'manager')->first();
-
-		$createTasks = new Permission();
-		$createTasks->slug = 'create-tasks';
-		$createTasks->name = 'Create Tasks';
-		$createTasks->save();
-		$createTasks->roles()->attach($dev_role);
-
-		$editUsers = new Permission();
-		$editUsers->slug = 'edit-users';
-		$editUsers->name = 'Edit Users';
-		$editUsers->save();
-		$editUsers->roles()->attach($manager_role);
-
-		$dev_role = Role::where('slug','developer')->first();
-		$manager_role = Role::where('slug', 'manager')->first();
-		$dev_perm = Permission::where('slug','create-tasks')->first();
-		$manager_perm = Permission::where('slug','edit-users')->first();
-
-		$developer = new User();
-		$developer->name = 'Mizanur Rahaman';
-		$developer->email = 'mizan@gmail.com';
-		$developer->password = bcrypt('123456');
-		$developer->save();
-		$developer->roles()->attach($dev_role);
-		$developer->permissions()->attach($dev_perm);
-
-		$manager = new User();
-		$manager->name = 'Jitesh Meniya';
-		$manager->email = 'jitesh211@gmail.com';
-		$manager->password = bcrypt('123456');
-		$manager->save();
-		$manager->roles()->attach($manager_role);
-		$manager->permissions()->attach($manager_perm);
-
-
-		return redirect()->back();
-    }*/
-
-    public function create(Request $request)
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function getData(Request $request)
     {
-        if ($request->user()->can('create-tasks')) {
-            echo 'can create';
+        return $this->permissionRepository->listPermission($request);
+    }
+
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function create()
+    {
+        $this->setPageTitle('Permissions', 'Create Permission');
+        return view('permissions.create');
+    }
+
+    /**
+     * @param StorePermissionFormRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(PermissionStoreFormRequest $request)
+    {
+        $params = $request->except('_token');
+
+        $permission = $this->permissionRepository->createPermission($params);
+
+        if (!$permission) {
+            return $this->responseRedirectBack( trans('common.create_error'), 'error', true, true);
         }
+        return $this->responseRedirect('permissions.index', trans('common.create_success'), 'success', false, false);
     }
 
-    public function store(Request $request)
+    /**
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function edit($id)
     {
-        if ($request->user()->can('create-store')) {
-            echo 'can store';
-        }
+        $this->setPageTitle('Permissions', 'Edit Permission');
+
+        $permission = $this->permissionRepository->findPermissionById($id);
+
+        return view('permissions.edit', compact('permission'));
     }
 
-    public function edit(Request $request)
+    /**
+     * @param UpdatePermissionFormRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(PermissionUpdateFormRequest $request, Permission $permissionModel)
     {
-        if ($request->user()->can('create-tasks')) {
-            echo 'can edit';
+        $params = $request->except('_token');
+
+        $permission = $this->permissionRepository->updatePermission($params);
+
+        if (!$permission) {
+            return $this->responseRedirectBack(trans('common.update_error'), 'error', true, true);
         }
+        return $this->responseRedirect('permissions.index', trans('common.update_success'), 'success', false, false);
     }
 
-    public function update(Request $request)
-    {
-        if ($request->user()->can('create-tasks')) {
-            echo 'can update';
-        }
-    }
-
+    /**
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Request $request, $id)
     {
-        if ($request->user()->can('delete-tasks')) {
-            echo 'can destroy';
-        }
+        $params = $request->except('_token');
+        $permission = $this->permissionRepository->deletePermission($id, $params);
 
+        if (!$permission) {
+            return $this->responseRedirectBack(trans('common.delete_error'), 'error', true, true);
+        }
+        return $this->responseRedirect('permissions.index', trans('common.delete_success') ,'success',false, false);
+    }
+
+    /**
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function restore()
+    {
+        $permissions = $this->permissionRepository->restore();
+
+        if (!$permissions) {
+            return $this->responseRedirectBack(trans('common.restore_error'), 'error', true, true);
+        }
+        return $this->responseRedirect('permissions.index', trans('common.restore_success') ,'success',false, false);
     }
 }

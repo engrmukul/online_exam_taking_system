@@ -19,8 +19,17 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/change-password', 'HomeController@changePassword')->name('change-password');
     Route::put('/reset-password', 'HomeController@resetPassword')->name('reset-password');
 
+    Route::resource('roles', 'RoleController', ['except' => ['show']]);
+    Route::get('roles/get-data', 'RoleController@getData');
+    Route::get('roles/restore', 'RoleController@restore')->name('roles.restore');
+
+    Route::resource('permissions', 'PermissionController', ['except' => ['show']]);
+    Route::get('permissions/get-data', 'PermissionController@getData');
+    Route::get('permissions/restore', 'PermissionController@restore')->name('permissions.restore');
+
     Route::resource('users', 'UserController', ['except' => ['show']]);
     Route::get('users/get-data', 'UserController@getData');
+    Route::get('users/restore', 'UserController@restore')->name('users.restore');
 
 
     Route::resource('subjects', 'SubjectController', ['except' => ['show']]);
