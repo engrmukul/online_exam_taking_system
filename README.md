@@ -20,11 +20,11 @@
     Manage Role
 
 ## Admin Activity sequentially 
-   Manage Subject
-   Manage Question
-   Manage Exam
-   Manage Exam Paper
-   Assign question to student
+    Manage Subject
+    Manage Question
+    Manage Exam
+    Manage Exam Paper
+    Assign question to student
    
  ## Student Activity
     Attend exam
