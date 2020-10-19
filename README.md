@@ -9,10 +9,11 @@
 ## php artisan migrate:fresh --seed
 ## php artisan serve
 
-###Default User
+### Default User
 ## System admin username : mukul, password: 123456
 ## Admin username : cloudly, password: 123456
 ## Student username : student, password: 123456
+
 
 
 
