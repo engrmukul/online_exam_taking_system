@@ -1,6 +1,6 @@
 
 ###### Command
-## git pull
+##  git pull
 ## composer update
 ## cp .env.example .env
 ## php artisan key:generate
