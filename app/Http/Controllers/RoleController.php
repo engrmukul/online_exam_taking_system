@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Permission;
 use App\Models\Role;
 use App\Models\Subject;
 use Illuminate\Http\Request;
@@ -29,21 +30,26 @@ class RoleController extends BaseController
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $this->setPageTitle('Roles', 'Roles List');
-        $data = [
-            'tableHeads' => [ trans('role.SN'), trans('role.name'), trans('role.slug'), trans('role.status'), trans('role.action')],
-            'dataUrl' => 'roles/get-data',
-            'columns' => [
-                ['data' => 'id', 'name' => 'id'],
-                ['data' => 'name', 'name' => 'name'],
-                ['data' => 'slug', 'name' => 'slug'],
-                ['data' => 'status', 'name' => 'status'],
-                ['data' => 'action', 'name' => 'action', 'orderable' => false]
-            ],
-        ];
-        return view('roles.index', $data);
+        if ($request->user()->can('role_list')) {
+            $this->setPageTitle('Roles', 'Roles List');
+            $data = [
+                'tableHeads' => [ trans('role.SN'), trans('role.name'), trans('role.slug'), trans('role.status'), trans('role.action')],
+                'dataUrl' => 'roles/get-data',
+                'columns' => [
+                    ['data' => 'id', 'name' => 'id'],
+                    ['data' => 'name', 'name' => 'name'],
+                    ['data' => 'slug', 'name' => 'slug'],
+                    ['data' => 'status', 'name' => 'status'],
+                    ['data' => 'action', 'name' => 'action', 'orderable' => false]
+                ],
+            ];
+            return view('roles.index', $data);
+        }else{
+            return redirect('/');
+        }
+
     }
 
     /**
@@ -58,10 +64,17 @@ class RoleController extends BaseController
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create()
+    public function create(Request $request)
     {
-        $this->setPageTitle('Roles', 'Create Role');
-        return view('roles.create');
+        if ($request->user()->can('role_add')) {
+            $this->setPageTitle('Roles', 'Create Role');
+
+            $permissions = Permission::all();
+
+            return view('roles.create', compact('permissions'));
+        }else{
+            return redirect('/');
+        }
     }
 
     /**
@@ -84,13 +97,20 @@ class RoleController extends BaseController
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $this->setPageTitle('Roles', 'Edit Role');
+        if ($request->user()->can('role_edit')) {
 
-        $role = $this->roleRepository->findRoleById($id);
+            $this->setPageTitle('Roles', 'Edit Role');
 
-        return view('roles.edit', compact('role'));
+            $role = Role::with('permissions')->where('id', $id)->first();
+
+            $allPermissions = Permission::all();
+
+            return view('roles.edit', compact('role', 'allPermissions'));
+        }else{
+            return redirect('/');
+        }
     }
 
     /**
@@ -115,13 +135,18 @@ class RoleController extends BaseController
      */
     public function destroy(Request $request, $id)
     {
-        $params = $request->except('_token');
-        $role = $this->roleRepository->deleteRole($id, $params);
+        if ($request->user()->can('role_delete')) {
+            $params = $request->except('_token');
+            $role = $this->roleRepository->deleteRole($id, $params);
 
-        if (!$role) {
-            return $this->responseRedirectBack(trans('common.delete_error'), 'error', true, true);
+            if (!$role) {
+                return $this->responseRedirectBack(trans('common.delete_error'), 'error', true, true);
+            }
+            return $this->responseRedirect('roles.index', trans('common.delete_success') ,'success',false, false);
+
+        }else{
+            return redirect('/');
         }
-        return $this->responseRedirect('roles.index', trans('common.delete_success') ,'success',false, false);
     }
 
     /**

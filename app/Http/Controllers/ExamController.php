@@ -22,32 +22,38 @@ class ExamController extends BaseController
      */
     public function __construct(ExamContract $examRepository)
     {
+        $this->middleware('auth');
         $this->examRepository = $examRepository;
     }
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $this->setPageTitle('Exams', 'Exams List');
-        $data = [
-            'tableHeads' => [ trans('exam.SN'), trans('exam.subject'), trans('exam.exam_title'), trans('exam.exam_date'), trans('exam.noq'), trans('exam.start_time'), trans('exam.end_time'), trans('exam.exam_status'), trans('exam.status'), trans('exam.action')],
-            'dataUrl' => 'exams/get-data',
-            'columns' => [
-                ['data' => 'id', 'name' => 'id'],
-                ['data' => 'subject', 'name' => 'subject'],
-                ['data' => 'exam_title', 'name' => 'exam_title'],
-                ['data' => 'exam_date', 'name' => 'exam_date'],
-                ['data' => 'noq', 'name' => 'noq'],
-                ['data' => 'start_time', 'name' => 'start_time'],
-                ['data' => 'end_time', 'name' => 'end_time'],
-                ['data' => 'exam_status', 'name' => 'exam_status'],
-                ['data' => 'status', 'name' => 'status'],
-                ['data' => 'action', 'name' => 'action', 'orderable' => false]
-            ],
-        ];
-        return view('exams.index', $data);
+        if ($request->user()->can('exam_list')) {
+
+            $this->setPageTitle('Exams', 'Exams List');
+            $data = [
+                'tableHeads' => [trans('exam.SN'), trans('exam.subject'), trans('exam.exam_title'), trans('exam.exam_date'), trans('exam.noq'), trans('exam.start_time'), trans('exam.end_time'), trans('exam.exam_status'), trans('exam.status'), trans('exam.action')],
+                'dataUrl' => 'exams/get-data',
+                'columns' => [
+                    ['data' => 'id', 'name' => 'id'],
+                    ['data' => 'subject', 'name' => 'subject'],
+                    ['data' => 'exam_title', 'name' => 'exam_title'],
+                    ['data' => 'exam_date', 'name' => 'exam_date'],
+                    ['data' => 'noq', 'name' => 'noq'],
+                    ['data' => 'start_time', 'name' => 'start_time'],
+                    ['data' => 'end_time', 'name' => 'end_time'],
+                    ['data' => 'exam_status', 'name' => 'exam_status'],
+                    ['data' => 'status', 'name' => 'status'],
+                    ['data' => 'action', 'name' => 'action', 'orderable' => false]
+                ],
+            ];
+            return view('exams.index', $data);
+        }else{
+            return redirect('/');
+        }
     }
 
     /**
@@ -62,11 +68,16 @@ class ExamController extends BaseController
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create()
+    public function create(Request $request)
     {
-        $this->setPageTitle('Exams', 'Create Exam');
-        $subjects = Subject::all();
-        return view('exams.create', compact('subjects'));
+        if ($request->user()->can('exam_add')) {
+
+            $this->setPageTitle('Exams', 'Create Exam');
+            $subjects = Subject::all();
+            return view('exams.create', compact('subjects'));
+        }else{
+            return redirect('/');
+        }
     }
 
     /**
@@ -89,15 +100,20 @@ class ExamController extends BaseController
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $this->setPageTitle('Exams', 'Edit Exam');
+        if ($request->user()->can('exam_edit')) {
 
-        $exam = $this->examRepository->findExamById($id);
+            $this->setPageTitle('Exams', 'Edit Exam');
 
-        $subjects = Subject::all();
+            $exam = $this->examRepository->findExamById($id);
 
-        return view('exams.edit', compact('exam','subjects'));
+            $subjects = Subject::all();
+
+            return view('exams.edit', compact('exam', 'subjects'));
+        }else{
+            return redirect('/');
+        }
     }
 
     /**

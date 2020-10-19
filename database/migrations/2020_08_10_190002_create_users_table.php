@@ -22,7 +22,6 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('is_password_changed', ['no','yes'])->default('no');
-            $table->enum('role', ['system_admin','owner','staff'])->default('owner');
             $table->rememberToken();
             $table->timestamp('last_login')->nullable();
             $table->enum('status', ['active','inactive'])->default('active');

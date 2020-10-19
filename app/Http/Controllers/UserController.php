@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Menu;
+use App\Models\Permission;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Contracts\UserContract;
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\StoreUserFormRequest;
-use App\Http\Requests\UpdateUserFormRequest;
+use App\Http\Requests\UserStoreFormRequest;
+use App\Http\Requests\UserUpdateFormRequest;
 
 class UserController extends BaseController
 {
@@ -22,30 +25,36 @@ class UserController extends BaseController
      */
     public function __construct(UserContract $userRepository)
     {
+        $this->middleware('auth');
         $this->userRepository = $userRepository;
     }
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $this->setPageTitle('Users', 'Users List');
-        $data = [
-            'tableHeads' => [ trans('user.SN'), trans('user.name'), trans('user.mobile'), trans('user.username'), trans('user.email'),trans('user.user'),trans('user.status')],
-            'dataUrl' => 'users/get-data',
-            'columns' => [
-                ['data' => 'id', 'name' => 'id'],
-                ['data' => 'name', 'name' => 'name'],
-                ['data' => 'mobile', 'name' => 'mobile'],
-                ['data' => 'username', 'name' => 'username'],
-                ['data' => 'email', 'name' => 'email'],
-                ['data' => 'user', 'name' => 'user'],
-                ['data' => 'status', 'name' => 'status'],
-                ['data' => 'action', 'name' => 'action', 'orderable' => false]
-            ],
-        ];
-        return view('users.index', $data);
+        if ($request->user()->can('user_list')) {
+            $this->setPageTitle('Users', 'Users List');
+
+            $data = [
+                'tableHeads' => [trans('user.SN'), trans('user.name'), trans('user.mobile'), trans('user.username'), trans('user.email'), trans('user.role'), trans('user.status'), trans('user.action')],
+                'dataUrl' => 'users/get-data',
+                'columns' => [
+                    ['data' => 'id', 'name' => 'id'],
+                    ['data' => 'name', 'name' => 'name'],
+                    ['data' => 'mobile', 'name' => 'mobile'],
+                    ['data' => 'username', 'name' => 'username'],
+                    ['data' => 'email', 'name' => 'email'],
+                    ['data' => 'role', 'name' => 'role'],
+                    ['data' => 'status', 'name' => 'status'],
+                    ['data' => 'action', 'name' => 'action', 'orderable' => false]
+                ],
+            ];
+            return view('users.index', $data);
+        }else{
+            return redirect('/');
+        }
     }
 
     /**
@@ -58,12 +67,29 @@ class UserController extends BaseController
     }
 
     /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function getStudentData(Request $request)
+    {
+        return $this->userRepository->listStudentUser($request);
+    }
+
+    /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create()
+    public function create(Request $request)
     {
-        $this->setPageTitle('Users', 'Create User');
-        return view('users.create');
+        if ($request->user()->can('user_add')) {
+            $this->setPageTitle('Users', 'Create User');
+
+            $roles = Role::all();
+            $menus = Menu::all();
+
+            return view('users.create', compact('roles', 'menus'));
+        }else{
+            return redirect('/');
+        }
     }
 
     /**
@@ -86,13 +112,21 @@ class UserController extends BaseController
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $this->setPageTitle('Users', 'Edit User');
+        if ($request->user()->can('user_edit')) {
+            $this->setPageTitle('Users', 'Edit User');
 
-        $user = $this->userRepository->findUserById($id);
+            $user = $this->userRepository->findUserById($id);
 
-        return view('users.edit', compact('user'));
+            $roles = Role::all();
+
+            $menus = Menu::all();
+
+            return view('users.edit', compact('user', 'roles', 'menus'));
+        }else{
+            return redirect('/');
+        }
     }
 
     /**

@@ -31,6 +31,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('users/get-data', 'UserController@getData');
     Route::get('users/restore', 'UserController@restore')->name('users.restore');
 
+    Route::get('students/get-data', 'UserController@getStudentData');
+
 
     Route::resource('subjects', 'SubjectController', ['except' => ['show']]);
     Route::get('subjects/get-data', 'SubjectController@getData');
@@ -66,18 +68,18 @@ Route::get('/', 'HomeController@index')->name('home');
 
 
 
-Route::group(['middleware' => 'role:developer'], function() {
-
-    Route::get('/permission/add', [App\Http\Controllers\PermissionController::class, 'create']);
-    Route::get('/permission/store', [App\Http\Controllers\PermissionController::class, 'store']);
-
-    Route::get('/admin', function() {
-
-        return 'Welcome Admin';
-
-    });
-
-});
+//Route::group(['middleware' => 'role:developer'], function() {
+//
+//    Route::get('/permission/add', [App\Http\Controllers\PermissionController::class, 'create']);
+//    Route::get('/permission/store', [App\Http\Controllers\PermissionController::class, 'store']);
+//
+//    Route::get('/admin', function() {
+//
+//        return 'Welcome Admin';
+//
+//    });
+//
+//});
 
 
 

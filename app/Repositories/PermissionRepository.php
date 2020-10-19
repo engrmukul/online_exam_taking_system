@@ -7,6 +7,7 @@ use App\Models\Permission;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Doctrine\Instantiator\Exception\InvalidArgumentException;
+use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
 class PermissionRepository extends BaseRepository implements PermissionContract
@@ -76,7 +77,7 @@ class PermissionRepository extends BaseRepository implements PermissionContract
 
             $created_by = auth()->user()->id;
 
-            $slug = str_slug($collection['slug'], "_");
+            $slug = Str::slug($collection['slug'], '_');
 
             $merge = $collection->merge(compact('created_by','slug'));
 
@@ -103,7 +104,7 @@ class PermissionRepository extends BaseRepository implements PermissionContract
 
         $updated_by = auth()->user()->id;
 
-        $slug = str_slug($collection['slug'], "_");
+        $slug = Str::slug($collection['slug'], '_');
 
         $merge = $collection->merge(compact('updated_by','slug'));
 

@@ -23,17 +23,18 @@ class QuestionPaperController extends BaseController
      */
     public function __construct(QuestionPaperContract $questionPaperRepository)
     {
+        $this->middleware('auth');
         $this->questionPaperRepository = $questionPaperRepository;
     }
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->setPageTitle('question-papers', 'QuestionPapers List');
         $data = [
-            'tableHeads' => [ trans('questionPaper.SN'), trans('questionPaper.exam'), trans('questionPaper.question_set'), trans('questionPaper.generate_by'), trans('questionPaper.status')],
+            'tableHeads' => [trans('questionPaper.SN'), trans('questionPaper.exam'), trans('questionPaper.question_set'), trans('questionPaper.generate_by'), trans('questionPaper.status')],
             'dataUrl' => 'question-papers/get-data',
             'columns' => [
                 ['data' => 'id', 'name' => 'id'],

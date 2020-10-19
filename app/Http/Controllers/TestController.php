@@ -28,6 +28,8 @@ class TestController extends BaseController
      */
     public function __construct(TestContract $testRepository)
     {
+        $this->middleware('auth');
+
         $this->testRepository = $testRepository;
 
         date_default_timezone_set('Asia/Dhaka');
@@ -36,67 +38,66 @@ class TestController extends BaseController
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $this->setPageTitle('Tests', 'Tests');
+        if ($request->user()->can('test')) {
+            $this->setPageTitle('Tests', 'Tests');
 
-        $pageData = new stdClass();
 
-        $query = QuestionAssign::where('student_id', auth()->user()->id)->with('exam', 'student', 'questionPaper');
+            $pageData = new stdClass();
+            $date = date('Y-m-d h:i:s');
+            $query = QuestionAssign::where('student_id', auth()->user()->id)->with('exam', 'student', 'questionPaper');
 
-        $query->whereHas('exam', function ($q) {
-            $q->where('exam_status','=', 'on_going');
-            $q->where('exam_date', '>=', date('Y-m-d'));
-            $q->orderBy('exam_date', 'ASC')->limit(1);
-        });
+            $query->whereHas('exam', function ($q) use ($date){
+                $q->where('exam_end_date_time', '>=', $date);
+                $q->orderBy('exam_start_date_time', 'ASC')->limit(1);
+            });
 
-        $testInfo = $query->first();
-        //dd($testInfo->toArray());
+            $testInfo = $query->first();
 
-        if ($testInfo) {
-            $questions = Question::with('answers')->whereIn('id', explode(',', $testInfo->questionPaper->question_ids))->get();
-            if ($questions) {
+            if ($testInfo) {
+                $questions = Question::with('answers')->whereIn('id', explode(',', $testInfo->questionPaper->question_ids))->get();
+                if ($questions) {
 
-                $studentTestInfo = Test::where(['student_id' => auth()->user()->id, 'exam_id' => $testInfo->exam_id, 'status' => 'finished'])->count();
+                    $studentTestInfo = Test::where(['student_id' => auth()->user()->id, 'exam_id' => $testInfo->exam_id, 'status' => 'finished'])->count();
 
-                if ($studentTestInfo == 1) {
-                    $pageData->examInfo = 'Exam Finished';
+                    if ($studentTestInfo == 1) {
+                        $pageData->examInfo = 'Exam Finished';
+
+                        return view('tests.exam_info', compact('pageData'));
+                    } else {
+
+                        if ($testInfo->exam->exam_date < date('Y-m-d')) {
+                            $pageData->examInfo = 'Exam Date Expire' . $testInfo->exam->exam_date;
+
+                            return view('tests.exam_info', compact('pageData'));
+                        } else if ($testInfo->exam->exam_date > date('Y-m-d')) {
+                            $pageData->examInfo = 'Exam Date ' . $testInfo->exam->exam_date;
+
+                            return view('tests.exam_info', compact('pageData'));
+                        } else if ($testInfo->exam->exam_date == date('Y-m-d') AND (strtotime($testInfo->exam->exam_date . ' ' . $testInfo->exam->start_time) <= strtotime(date('Y-m-d h:i:s'))) AND (strtotime($testInfo->exam->exam_date . ' ' . $testInfo->exam->end_time) >= strtotime(date('Y-m-d h:i:s'))) AND $testInfo->exam->exam_status == 'on_going') {
+                            $savedAnswers = array_map('current', Test::select('answer_id')->where(['student_id' => $testInfo->student->id, 'exam_id' => $testInfo->exam_id])->get()->toArray());
+
+                            return view('tests.index', compact('testInfo', 'questions', 'savedAnswers'));
+                        } else {
+                            $pageData->examInfo = 'Last Exam Finished ' . $testInfo->exam->exam_date . ' ' . date('h:i:s a', strtotime($testInfo->exam->end_time));
+
+                            return view('tests.exam_info', compact('pageData'));
+                        }
+                    }
+
+                } else {
+                    $pageData->examInfo = 'Exam Not Published';
 
                     return view('tests.exam_info', compact('pageData'));
-                } else {
-
-                    if ($testInfo->exam->exam_date < date('Y-m-d')) {
-                        $pageData->examInfo = 'Exam Date Expire' . $testInfo->exam->exam_date;
-
-                        return view('tests.exam_info', compact('pageData'));
-                    }
-
-                    else if ($testInfo->exam->exam_date > date('Y-m-d')) {
-                        $pageData->examInfo = 'Exam Date ' . $testInfo->exam->exam_date;
-
-                        return view('tests.exam_info', compact('pageData'));
-                    }
-
-                    else if ($testInfo->exam->exam_date == date('Y-m-d') AND (strtotime($testInfo->exam->exam_date .' '. $testInfo->exam->start_time) <= strtotime(date('Y-m-d h:i:s'))) AND (strtotime($testInfo->exam->exam_date .' '. $testInfo->exam->end_time) >= strtotime(date('Y-m-d h:i:s'))) AND $testInfo->exam->exam_status == 'on_going') {
-                        $savedAnswers = array_map('current', Test::select('answer_id')->where(['student_id'=>$testInfo->student->id, 'exam_id'=> $testInfo->exam_id])->get()->toArray());
-
-                        return view('tests.index', compact('testInfo', 'questions','savedAnswers'));
-                    } else {
-                        $pageData->examInfo = 'Last Exam Finished '. $testInfo->exam->exam_date . ' ' . date('h:i:s a', strtotime($testInfo->exam->end_time));
-
-                        return view('tests.exam_info', compact('pageData'));
-                    }
                 }
-
             } else {
                 $pageData->examInfo = 'Exam Not Published';
 
                 return view('tests.exam_info', compact('pageData'));
             }
-        } else {
-            $pageData->examInfo = 'Exam Not Published';
-
-            return view('tests.exam_info', compact('pageData'));
+        }else{
+            return redirect('/');
         }
     }
 
@@ -128,6 +129,8 @@ class TestController extends BaseController
             ->take(1)
             ->update(['status' => 'finished']);
 
+        $this->answerMail($examId);
+
         return 'success';
     }
 
@@ -140,9 +143,27 @@ class TestController extends BaseController
         Exam::where('id', $examId)
             ->update(['exam_status' => 'expired']);
 
-        //EMAIL FUNCTION CALL USING JOB QUE
+        $this->answerMail($examId);
 
         return 'success';
+    }
+
+    public function answerMail($examId)
+    {
+        //EMAIL FUNCTION CALL
+
+        $testResult = Test::with('questions', 'answers')->where(['exam_id'=>$examId, 'student_id'=>auth()->user()->id])->get();
+
+        $details = [
+            'title' => 'Mail from student',
+            'testResult' => $testResult
+        ];
+
+        $adminEmail = Exam::with('admin')->where('id', $examId)->first();
+
+        \Mail::to( $adminEmail->admin->email )->send(new \App\Mail\AnswerMail($details));
+
+        return true;
     }
 
     /**

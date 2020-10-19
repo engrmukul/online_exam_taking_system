@@ -22,27 +22,32 @@ class QuestionController extends BaseController
      */
     public function __construct(QuestionContract $questionRepository)
     {
+        $this->middleware('auth');
         $this->questionRepository = $questionRepository;
     }
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $this->setPageTitle('Questions', 'Questions List');
-        $data = [
-            'tableHeads' => [ trans('question.SN'), trans('question.subject'), trans('question.question'), trans('question.status'), trans('question.action')],
-            'dataUrl' => 'questions/get-data',
-            'columns' => [
-                ['data' => 'id', 'name' => 'id'],
-                ['data' => 'subject', 'name' => 'subject'],
-                ['data' => 'question', 'name' => 'question'],
-                ['data' => 'status', 'name' => 'status'],
-                ['data' => 'action', 'name' => 'action', 'orderable' => false]
-            ],
-        ];
-        return view('questions.index', $data);
+        if ($request->user()->can('question_list')) {
+            $this->setPageTitle('Questions', 'Questions List');
+            $data = [
+                'tableHeads' => [trans('question.SN'), trans('question.subject'), trans('question.question'), trans('question.status'), trans('question.action')],
+                'dataUrl' => 'questions/get-data',
+                'columns' => [
+                    ['data' => 'id', 'name' => 'id'],
+                    ['data' => 'subject', 'name' => 'subject'],
+                    ['data' => 'question', 'name' => 'question'],
+                    ['data' => 'status', 'name' => 'status'],
+                    ['data' => 'action', 'name' => 'action', 'orderable' => false]
+                ],
+            ];
+            return view('questions.index', $data);
+        }else{
+            return redirect('/');
+        }
     }
 
     /**
@@ -57,11 +62,16 @@ class QuestionController extends BaseController
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create()
+    public function create(Request $request)
     {
-        $this->setPageTitle('Questions', 'Create Question');
-        $subjects = Subject::all();
-        return view('questions.create', compact('subjects'));
+        if ($request->user()->can('question_add')) {
+
+            $this->setPageTitle('Questions', 'Create Question');
+            $subjects = Subject::all();
+            return view('questions.create', compact('subjects'));
+        }else{
+            return redirect('/');
+        }
     }
 
     /**
@@ -90,15 +100,21 @@ class QuestionController extends BaseController
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $this->setPageTitle('Questions', 'Edit Question');
 
-        $question = $this->questionRepository->findQuestionById($id);
+        if ($request->user()->can('question_edit')) {
 
-        $subjects = Subject::all();
+            $this->setPageTitle('Questions', 'Edit Question');
 
-        return view('questions.edit', compact('question','subjects'));
+            $question = $this->questionRepository->findQuestionById($id);
+
+            $subjects = Subject::all();
+
+            return view('questions.edit', compact('question', 'subjects'));
+        }else{
+            return redirect('/');
+        }
     }
 
     /**

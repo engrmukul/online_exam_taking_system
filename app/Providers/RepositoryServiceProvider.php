@@ -3,16 +3,20 @@
 namespace App\Providers;
 
 use App\Contracts\ExamContract;
+use App\Contracts\PermissionContract;
 use App\Contracts\QuestionAssignContract;
 use App\Contracts\QuestionContract;
 use App\Contracts\QuestionPaperContract;
+use App\Contracts\RoleContract;
 use App\Contracts\SubjectContract;
 use App\Contracts\TestContract;
 use App\Contracts\UserContract;
 use App\Repositories\ExamRepository;
+use App\Repositories\PermissionRepository;
 use App\Repositories\QuestionAssignRepository;
 use App\Repositories\QuestionPaperRepository;
 use App\Repositories\QuestionRepository;
+use App\Repositories\RoleRepository;
 use App\Repositories\SubjectRepository;
 use App\Repositories\TestRepository;
 use Illuminate\Support\ServiceProvider;

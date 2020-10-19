@@ -4,10 +4,12 @@ namespace App\Repositories;
 
 use App\Contracts\RoleContract;
 use App\Models\Role;
+use App\Models\RolePermission;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Doctrine\Instantiator\Exception\InvalidArgumentException;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class RoleRepository extends BaseRepository implements RoleContract
 {
@@ -76,13 +78,26 @@ class RoleRepository extends BaseRepository implements RoleContract
 
             $created_by = auth()->user()->id;
 
-            $slug = str_slug($collection['slug'], "_");
+            $slug = Str::slug($collection['slug'], '_');
 
             $merge = $collection->merge(compact('created_by','slug'));
 
             $role = new Role($merge->all());
 
             $role->save();
+
+            //SAVE ROLE PERMISSION
+            $rolePermissionArray = array();
+            foreach ($collection['permission_id'] as $key => $pid){
+                $rpData['role_id'] = $role->id;
+                $rpData['permission_id'] = $pid ;
+
+                $rolePermissionArray[] = $rpData;
+            }
+
+            $rolepermissionObj = new RolePermission();
+
+            $rolepermissionObj::insert($rolePermissionArray);
 
             return $role;
 
@@ -103,11 +118,26 @@ class RoleRepository extends BaseRepository implements RoleContract
 
         $updated_by = auth()->user()->id;
 
-        $slug = str_slug($collection['slug'], "_");
+        $slug = Str::slug($collection['slug'], '_');
 
         $merge = $collection->merge(compact('updated_by','slug'));
 
         $role->update($merge->all());
+
+        //UPDATE ROLE PERMISSION
+        $rolePermissionArray = array();
+        foreach ($collection['permission_id'] as $key => $pid){
+            $rpData['role_id'] = $role->id;
+            $rpData['permission_id'] = $pid ;
+
+            $rolePermissionArray[] = $rpData;
+        }
+
+        $rolepermissionObj = new RolePermission();
+
+        $rolepermissionObj::where('role_id', $role->id)->delete();
+
+        $rolepermissionObj::insert($rolePermissionArray);
 
         return $role;
     }
@@ -129,6 +159,10 @@ class RoleRepository extends BaseRepository implements RoleContract
         $merge = $collection->merge(compact('deleted_by'));
 
         $role->update($merge->all());
+
+        $rolepermissionObj = new RolePermission();
+
+        $rolepermissionObj::where('role_id', $role->id)->delete();
 
         return $role;
     }

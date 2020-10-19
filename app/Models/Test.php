@@ -35,4 +35,14 @@ class Test extends Model
 
     ];
 
+    public function questions() {
+
+        return $this->belongsTo('App\Models\Question', 'question_id');
+    }
+
+    public function answers() {
+
+        return $this->belongsTo('App\Models\Answer', 'answer_id');
+    }
+
 }

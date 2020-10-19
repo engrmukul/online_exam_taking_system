@@ -7,7 +7,7 @@
             <div class="col-lg-12">
                 <div class="ibox ">
                     <div class="ibox-title">
-                        <h5><i class="fa fa-book"></i> {{ trans('common.create')}}</h5>
+                        <h5><i class="fa fa-book"></i> Permission {{ trans('common.create')}}</h5>
                         <div class="ibox-tools">
                             <a style="margin-top: -8px;" href="{{ route( strtolower($pageTitle) . '.index') }}" class="btn btn-primary"><i
                                     class="fa fa-list"></i> {{ trans('common.list')}}</a>

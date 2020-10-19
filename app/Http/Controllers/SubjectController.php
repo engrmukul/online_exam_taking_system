@@ -21,27 +21,32 @@ class SubjectController extends BaseController
      */
     public function __construct(SubjectContract $subjectRepository)
     {
+        $this->middleware('auth');
         $this->subjectRepository = $subjectRepository;
     }
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $this->setPageTitle('Subjects', 'Subjects List');
-        $data = [
-            'tableHeads' => [ trans('subject.SN'), trans('subject.code'), trans('subject.name'), trans('subject.status'), trans('subject.action')],
-            'dataUrl' => 'subjects/get-data',
-            'columns' => [
-                ['data' => 'id', 'name' => 'id'],
-                ['data' => 'code', 'name' => 'code'],
-                ['data' => 'name', 'name' => 'name'],
-                ['data' => 'status', 'name' => 'status'],
-                ['data' => 'action', 'name' => 'action', 'orderable' => false]
-            ],
-        ];
-        return view('subjects.index', $data);
+        if ($request->user()->can('subject_list')) {
+            $this->setPageTitle('Subjects', 'Subjects List');
+            $data = [
+                'tableHeads' => [trans('subject.SN'), trans('subject.code'), trans('subject.name'), trans('subject.status'), trans('subject.action')],
+                'dataUrl' => 'subjects/get-data',
+                'columns' => [
+                    ['data' => 'id', 'name' => 'id'],
+                    ['data' => 'code', 'name' => 'code'],
+                    ['data' => 'name', 'name' => 'name'],
+                    ['data' => 'status', 'name' => 'status'],
+                    ['data' => 'action', 'name' => 'action', 'orderable' => false]
+                ],
+            ];
+            return view('subjects.index', $data);
+        } else {
+            return redirect('/');
+        }
     }
 
     /**
@@ -56,10 +61,14 @@ class SubjectController extends BaseController
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create()
+    public function create(Request $request)
     {
-        $this->setPageTitle('Subjects', 'Create Subject');
-        return view('subjects.create');
+        if ($request->user()->can('subject_add')) {
+            $this->setPageTitle('Subjects', 'Create Subject');
+            return view('subjects.create');
+        }else{
+            return redirect('/');
+        }
     }
 
     /**
@@ -82,12 +91,17 @@ class SubjectController extends BaseController
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $subject = $this->subjectRepository->findSubjectById($id);
+        if ($request->user()->can('subject_edit')) {
+            $subject = $this->subjectRepository->findSubjectById($id);
 
-        $this->setPageTitle('Subjects', 'Edit Subject');
-        return view('subjects.edit', compact('subject'));
+
+            $this->setPageTitle('Subjects', 'Edit Subject');
+            return view('subjects.edit', compact('subject'));
+        }else{
+
+        }
     }
 
     /**

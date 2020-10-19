@@ -24,28 +24,34 @@ class QuestionAssignController extends BaseController
      */
     public function __construct(QuestionAssignContract $questionAssignRepository)
     {
+        $this->middleware('auth');
         $this->questionAssignRepository = $questionAssignRepository;
     }
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $this->setPageTitle('question-assigns', 'QuestionAssigns List');
-        $data = [
-            'tableHeads' => [ trans('questionAssign.SN'), trans('questionAssign.exam'), trans('questionAssign.student'),trans('questionAssign.question_paper')],
-            'dataUrl' => 'question-assigns/get-data',
-            'columns' => [
-                ['data' => 'id', 'name' => 'id'],
-                ['data' => 'exam', 'name' => 'exam'],
-                ['data' => 'student', 'name' => 'student'],
-                ['data' => 'question_paper', 'name' => 'question_paper'],
-                //['data' => 'status', 'name' => 'status'],
-               // ['data' => 'action', 'name' => 'action', 'orderable' => false]
-            ],
-        ];
-        return view('questionAssigns.index', $data);
+        if ($request->user()->can('assign_list')) {
+
+            $this->setPageTitle('question-assigns', 'QuestionAssigns List');
+            $data = [
+                'tableHeads' => [trans('questionAssign.SN'), trans('questionAssign.exam'), trans('questionAssign.student'), trans('questionAssign.question_paper')],
+                'dataUrl' => 'question-assigns/get-data',
+                'columns' => [
+                    ['data' => 'id', 'name' => 'id'],
+                    ['data' => 'exam', 'name' => 'exam'],
+                    ['data' => 'student', 'name' => 'student'],
+                    ['data' => 'question_paper', 'name' => 'question_paper'],
+                    //['data' => 'status', 'name' => 'status'],
+                    // ['data' => 'action', 'name' => 'action', 'orderable' => false]
+                ],
+            ];
+            return view('questionAssigns.index', $data);
+        }else{
+            return redirect('/');
+        }
     }
 
     /**
@@ -60,32 +66,37 @@ class QuestionAssignController extends BaseController
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create()
+    public function create(Request $request)
     {
-        $this->setPageTitle('question-assigns', 'Create QuestionAssign');
+        if ($request->user()->can('assign_add')) {
 
-        $query = QuestionPaper::with('exam');
+            $this->setPageTitle('question-assigns', 'Create QuestionAssign');
 
-        $query->whereHas('exam', function ($q) {
-            $q->where('exam_status', 'not_start');
-        });
+            $query = QuestionPaper::with('exam');
 
-        $exams = $query->groupBy('exam_id')->get();
+            $query->whereHas('exam', function ($q) {
+                $q->where('exam_status', 'not_start');
+            });
 
-        $data = [
-            'tableHeads' => [ trans('user.SN'), trans('user.name'), trans('user.mobile'), trans('user.username'), trans('user.email')],
-            'dataUrl' => 'users/get-data',
-            'columns' => [
-                ['data' => 'id', 'name' => 'id'],
-                ['data' => 'name', 'name' => 'name'],
-                ['data' => 'mobile', 'name' => 'mobile'],
-                ['data' => 'username', 'name' => 'username'],
-                ['data' => 'email', 'name' => 'email']
-            ],
-        ];
+            $exams = $query->groupBy('exam_id')->get();
+
+            $data = [
+                'tableHeads' => [trans('user.SN'), trans('user.name'), trans('user.mobile'), trans('user.username'), trans('user.email')],
+                'dataUrl' => 'students/get-data',
+                'columns' => [
+                    ['data' => 'id', 'name' => 'id'],
+                    ['data' => 'name', 'name' => 'name'],
+                    ['data' => 'mobile', 'name' => 'mobile'],
+                    ['data' => 'username', 'name' => 'username'],
+                    ['data' => 'email', 'name' => 'email']
+                ],
+            ];
 
 
-        return view('questionAssigns.create', $data, compact('exams'));
+            return view('questionAssigns.create', $data, compact('exams'));
+        }else{
+            return redirect('/');
+        }
     }
 
     /**

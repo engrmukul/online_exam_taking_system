@@ -3,6 +3,7 @@
 return [
     'dashboard' => 'Dashboard',
     'users' => 'Users',
+    'user_management' => 'User Management',
     'message' => 'message',
     'change_password' => 'Change password',
     'system_admin' => 'System admin',

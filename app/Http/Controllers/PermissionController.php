@@ -29,21 +29,26 @@ class PermissionController extends BaseController
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $this->setPageTitle('Permissions', 'Permissions List');
-        $data = [
-            'tableHeads' => [ trans('permission.SN'), trans('permission.name'), trans('permission.slug'), trans('permission.status'), trans('permission.action')],
-            'dataUrl' => 'permissions/get-data',
-            'columns' => [
-                ['data' => 'id', 'name' => 'id'],
-                ['data' => 'name', 'name' => 'name'],
-                ['data' => 'slug', 'name' => 'slug'],
-                ['data' => 'status', 'name' => 'status'],
-                ['data' => 'action', 'name' => 'action', 'orderable' => false]
-            ],
-        ];
-        return view('permissions.index', $data);
+        if ($request->user()->can('permission_list')) {
+
+            $this->setPageTitle('Permissions', 'Permissions List');
+            $data = [
+                'tableHeads' => [trans('permission.SN'), trans('permission.name'), trans('permission.slug'), trans('permission.status'), trans('permission.action')],
+                'dataUrl' => 'permissions/get-data',
+                'columns' => [
+                    ['data' => 'id', 'name' => 'id'],
+                    ['data' => 'name', 'name' => 'name'],
+                    ['data' => 'slug', 'name' => 'slug'],
+                    ['data' => 'status', 'name' => 'status'],
+                    ['data' => 'action', 'name' => 'action', 'orderable' => false]
+                ],
+            ];
+            return view('permissions.index', $data);
+        }else{
+            return redirect('/');
+        }
     }
 
     /**
@@ -58,10 +63,15 @@ class PermissionController extends BaseController
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create()
+    public function create(Request $request)
     {
-        $this->setPageTitle('Permissions', 'Create Permission');
-        return view('permissions.create');
+        if ($request->user()->can('permission_add')) {
+
+            $this->setPageTitle('Permissions', 'Create Permission');
+            return view('permissions.create');
+        }else{
+            return redirect('/');
+        }
     }
 
     /**
@@ -84,13 +94,17 @@ class PermissionController extends BaseController
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $this->setPageTitle('Permissions', 'Edit Permission');
+        if ($request->user()->can('permission_edit')) {
+            $this->setPageTitle('Permissions', 'Edit Permission');
 
-        $permission = $this->permissionRepository->findPermissionById($id);
+            $permission = $this->permissionRepository->findPermissionById($id);
 
-        return view('permissions.edit', compact('permission'));
+            return view('permissions.edit', compact('permission'));
+        }else{
+            return redirect('/');
+        }
     }
 
     /**

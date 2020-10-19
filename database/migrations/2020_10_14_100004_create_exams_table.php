@@ -23,6 +23,8 @@ class CreateExamsTable extends Migration
             $table->smallInteger('noq')->default(10)->comment('noq = number of question');
             $table->string('start_time', 20);
             $table->string('end_time',20);
+            $table->dateTime('exam_start_date_time');
+            $table->dateTime('exam_end_date_time');
             $table->enum('exam_status', ['not_start','on_going','expired'])->default('not_start');
             $this->commonColumns($table);
         });

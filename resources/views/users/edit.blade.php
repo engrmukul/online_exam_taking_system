@@ -15,22 +15,78 @@
                     </div>
                     <div class="ibox-content">
                         <!---FORM--->
-                        <form role="form" method="post" action="{{route( strtolower($pageTitle) . '.update', $role->id )}}">
+                        <form role="form" method="post" action="{{route( strtolower($pageTitle) . '.update', $user->id )}}">
                             @method('PUT')
                             @csrf
-                            <!---Name--->
-                            <div class="form-group">
-                                <label for="name" class="font-bold">{{ trans('role.name')}}</label>
-                                <input type="hidden" name="id" value="{{ $role->id }}">
-                                <input type="text" name="name" value="{{ old('name', $role->name) }}" placeholder="{{ trans('role.name')}}" maxlength="255" class="form-control" required>
-                                <span class="form-text m-b-none text-danger"> @error('name') {{ $message }} @enderror </span>
-                            </div>
 
-                            <!---Slug--->
-                            <div class="form-group">
-                                <label for="slug" class="font-bold">{{ trans('role.slug')}}</label>
-                                <input type="text" name="slug" value="{{ old('slug', $role->slug) }}" placeholder="{{ trans('role.slug')}}" maxlength="255" class="form-control" required>
-                                <span class="form-text m-b-none text-danger"> @error('slug') {{ $message }} @enderror </span>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <!---Name--->
+                                    <div class="form-group">
+                                        <label for="name" class="font-bold">{{ trans('user.name')}}</label>
+                                        <input type="hidden" name="id" value="{{ $user->id }}">
+                                        <input type="text" name="name" value="{{ old('name', $user->name) }}" placeholder="{{ trans('user.name')}}" maxlength="255" class="form-control" required>
+                                        <span class="form-text m-b-none text-danger"> @error('name') {{ $message }} @enderror </span>
+                                    </div>
+
+                                    <!---mobile--->
+                                    <div class="form-group">
+                                        <label for="mobile" class="font-bold">{{ trans('user.mobile')}}</label>
+                                        <input type="text" name="mobile" value="{{ old('mobile',$user->mobile) }}" placeholder="{{ trans('user.mobile')}}" maxlength="20" class="form-control" required>
+                                        <span class="form-text m-b-none text-danger"> @error('mobile') {{ $message }} @enderror </span>
+                                    </div>
+
+                                    <!---username--->
+                                    <div class="form-group">
+                                        <label for="username" class="font-bold">{{ trans('user.username')}}</label>
+                                        <input type="text" name="username" value="{{ old('username', $user->username) }}" placeholder="{{ trans('user.username')}}" maxlength="50" class="form-control" required>
+                                        <span class="form-text m-b-none text-danger"> @error('username') {{ $message }} @enderror </span>
+                                    </div>
+
+                                    <!---mobile--->
+                                    <div class="form-group">
+                                        <label for="email" class="font-bold">{{ trans('user.email')}}</label>
+                                        <input type="text" name="email" value="{{ old('email', $user->email) }}" placeholder="{{ trans('user.email')}}" maxlength="50" class="form-control" required>
+                                        <span class="form-text m-b-none text-danger"> @error('email') {{ $message }} @enderror </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+
+                                    <!---password--->
+                                    <div class="form-group">
+                                        <label for="password" class="font-bold">{{ trans('user.password')}}</label>
+                                        <input type="text" name="password" value="" placeholder="{{ trans('user.password')}}" maxlength="50" class="form-control" required>
+                                        <span class="form-text m-b-none text-danger"> @error('password') {{ $message }} @enderror </span>
+                                    </div>
+
+                                    <!---role--->
+                                    <div class="form-group">
+                                        <label for="role" class="font-bold">{{ trans('user.role')}}</label>
+
+                                        <select class="form-control" name="role_id[]" required multiple="">
+                                            @forelse($roles as $key => $role)
+                                                <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+
+                                        <span class="form-text m-b-none text-danger"> @error('role_id') {{ $message }} @enderror </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <!---Menu--->
+                                    <div class="form-group">
+                                        <label for="menu" class="font-bold">{{ trans('user.menu')}}</label>
+
+                                        @forelse($menus as $key => $menu)
+                                            <input type="checkbox" name="menu_id[]" value="{{ old('menu_id', $menu->id) }}" placeholder="{{ trans('user.menu')}}" class="form-control"> {{$menu->name}}
+                                        @empty
+                                        @endforelse
+
+                                        <span class="form-text m-b-none text-danger"> @error('menu_id') {{ $message }} @enderror </span>
+                                    </div>
+                                </div>
                             </div>
 
                             <!---CONTROL BUTTON--->

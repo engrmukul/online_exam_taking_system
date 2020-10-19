@@ -7,7 +7,7 @@
             <div class="col-lg-12">
                 <div class="ibox ">
                     <div class="ibox-title">
-                        <h5><i class="fa fa-book"></i> {{ trans('common.create')}}</h5>
+                        <h5><i class="fa fa-book"></i> Role {{ trans('common.create')}}</h5>
                         <div class="ibox-tools">
                             <a style="margin-top: -8px;" href="{{ route( strtolower($pageTitle) . '.index') }}" class="btn btn-primary"><i
                                     class="fa fa-list"></i> {{ trans('common.list')}}</a>
@@ -32,7 +32,20 @@
                                 <span class="form-text m-b-none text-danger"> @error('slug') {{ $message }} @enderror </span>
                             </div>
 
-                            <!---CONTROL BUTTON--->
+                            <!---Permission--->
+                            <div class="form-group">
+                                <label for="slug" class="font-bold">{{ trans('role.permission')}}</label>
+
+                                @forelse($permissions as $key => $permission)
+                                    <input type="checkbox" name="permission_id[]" value="{{ old('permission_id', $permission->id) }}" placeholder="{{ trans('role.permission')}}" class="form-control"> {{$permission->name}}
+                                @empty
+                                @endforelse
+
+                                <span class="form-text m-b-none text-danger"> @error('permission_id') {{ $message }} @enderror </span>
+                            </div>
+
+
+                                <!---CONTROL BUTTON--->
                             <div class="form-group row">
                                 <div class="col-sm-4 col-sm-offset-2">
                                     <button class="btn btn-success" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>{{ trans('common.submit')}}</button>

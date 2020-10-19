@@ -80,8 +80,11 @@ class ExamRepository extends BaseRepository implements ExamContract
             $collection = collect($params);
 
             $created_by = auth()->user()->id;
-            
-            $merge = $collection->merge(compact('created_by'));
+
+            $exam_start_date_time = $collection['exam_date'].' '. $collection['start_time'];
+            $exam_end_date_time = $collection['exam_date'].' '. $collection['end_time'];
+
+            $merge = $collection->merge(compact('created_by','exam_start_date_time','exam_end_date_time'));
 
             $subject = new Exam($merge->all());
 
@@ -106,7 +109,11 @@ class ExamRepository extends BaseRepository implements ExamContract
 
         $updated_by = auth()->user()->id;
 
-        $merge = $collection->merge(compact('updated_by'));
+        $exam_start_date_time = $collection['exam_date'].' '. $collection['start_time'];
+        $exam_end_date_time = $collection['exam_date'].' '. $collection['end_time'];
+
+        $merge = $collection->merge(compact('updated_by','exam_start_date_time','exam_end_date_time'));
+
 
         $subject->update($merge->all());
 

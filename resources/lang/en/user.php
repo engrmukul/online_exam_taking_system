@@ -9,6 +9,9 @@ return [
     'username' => 'User Name',
     'email' => 'Email',
     'role' => 'Role',
+    'create' => 'User Create',
+    'password' => 'Password',
+    'menu' => 'Menu Assign',
     'status' => 'status',
     'action' => 'action',
 

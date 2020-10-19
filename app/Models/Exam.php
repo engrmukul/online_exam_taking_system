@@ -27,6 +27,8 @@ class Exam extends Model
         'noq',
         'start_time',
         'end_time',
+        'exam_start_date_time',
+        'exam_end_date_time',
         'exam_status',
         'status',
         'created_at',
@@ -48,5 +50,10 @@ class Exam extends Model
     {
         return $this->belongsTo('App\Models\Subject');
     }
+
+    public function admin()
+        {
+            return $this->belongsTo('App\Models\User', 'created_by');
+        }
 
 }

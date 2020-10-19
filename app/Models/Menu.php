@@ -4,21 +4,29 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class UserRole extends Model
+class Menu extends Model
 {
+    use SoftDeletes;
     /**
      * @var string
      */
-    protected $table = 'users_roles';
-    public $timestamps = false;
+    protected $table = 'menus';
 
     /**
      * @var array
      */
     protected $fillable = [
-        'user_id',
-        'role_id',
+        'name',
+        'slug',
+        'route',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'created_by',
+        'updated_by',
+        'deleted_by'
     ];
 
     /**
@@ -27,5 +35,4 @@ class UserRole extends Model
     protected $casts  = [
 
     ];
-
 }

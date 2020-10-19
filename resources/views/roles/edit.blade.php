@@ -7,7 +7,7 @@
             <div class="col-lg-12">
                 <div class="ibox ">
                     <div class="ibox-title">
-                        <h5><i class="fa fa-book"></i> {{ $pageTitle }} Update Form</h5>
+                        <h5><i class="fa fa-book"></i>  {{ $pageTitle }} Update Form</h5>
                         <div class="ibox-tools">
                             <a style="margin-top: -8px;" href="{{ route( strtolower($pageTitle) . '.index') }}" class="btn btn-primary"><i
                                     class="fa fa-list"></i> {{ trans('common.list')}}</a>
@@ -30,6 +30,18 @@
                             <div class="form-group">
                                 <label for="slug" class="font-bold">{{ trans('role.slug')}}</label>
                                 <input type="text" name="slug" value="{{ old('slug', $role->slug) }}" placeholder="{{ trans('role.slug')}}" maxlength="255" class="form-control" required>
+                                <span class="form-text m-b-none text-danger"> @error('slug') {{ $message }} @enderror </span>
+                            </div>
+
+                            <!---Permission--->
+                            <div class="form-group">
+                                <label for="slug" class="font-bold">{{ trans('role.permission')}}</label>
+
+                                @forelse($allPermissions as $key => $permission)
+                                    <input type="checkbox" name="permission_id[]" value="{{ old('permission_id', $permission->id) }}" placeholder="{{ trans('role.permission')}}" class="form-control"> {{$permission->name}}
+                                @empty
+                                @endforelse
+
                                 <span class="form-text m-b-none text-danger"> @error('slug') {{ $message }} @enderror </span>
                             </div>
 
