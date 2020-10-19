@@ -14,6 +14,23 @@
 ## Admin username : cloudly, password: 123456
 ## Student username : student, password: 123456
 
+## System Admin Activity sequentially 
+    Manage User
+    Manage Permission
+    Manage Role
+
+## Admin Activity sequentially 
+   Manage Subject
+   Manage Question
+   Manage Exam
+   Manage Exam Paper
+   Assign question to student
+   
+ ## Student Activity
+    Attend exam
+
+    
+
 
 
 
