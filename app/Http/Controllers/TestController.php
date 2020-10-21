@@ -45,7 +45,7 @@ class TestController extends BaseController
 
 
             $pageData = new stdClass();
-            $date = date('Y-m-d h:i:s');
+            $date = date('Y-m-d H:i:s');
             $query = QuestionAssign::where('student_id', auth()->user()->id)->with('exam', 'student', 'questionPaper');
 
             $query->whereHas('exam', function ($q) use ($date){
@@ -82,7 +82,7 @@ class TestController extends BaseController
 
                             return view('tests.index', compact('testInfo', 'questions', 'savedAnswers'));
                         } else {
-                            $pageData->examInfo = 'Last Exam Finished ' . $testInfo->exam->exam_date . ' ' . date('h:i:s a', strtotime($testInfo->exam->end_time));
+                            $pageData->examInfo = 'Exam will start ' . $testInfo->exam->exam_date . ' ' . date('h:i:s a', strtotime($testInfo->exam->start_time));
 
                             return view('tests.exam_info', compact('pageData'));
                         }
