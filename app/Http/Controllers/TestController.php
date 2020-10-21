@@ -75,7 +75,9 @@ class TestController extends BaseController
                             $pageData->examInfo = 'Exam Date ' . $testInfo->exam->exam_date;
 
                             return view('tests.exam_info', compact('pageData'));
-                        } else if ($testInfo->exam->exam_date == date('Y-m-d') AND (strtotime($testInfo->exam->exam_date . ' ' . $testInfo->exam->start_time) <= strtotime(date('Y-m-d h:i:s'))) AND (strtotime($testInfo->exam->exam_date . ' ' . $testInfo->exam->end_time) >= strtotime(date('Y-m-d h:i:s'))) AND $testInfo->exam->exam_status == 'on_going') {
+                        
+                        } else if ($testInfo->exam->exam_date == date('Y-m-d') AND (date('Y-m-d h:i:s a', strtotime($testInfo->exam->exam_start_date_time)) <= date('Y-m-d h:i:s a')) AND date('Y-m-d h:i:s a', strtotime($testInfo->exam->exam_end_date_time)) > date('Y-m-d h:i:s a') AND $testInfo->exam->exam_status == 'on_going') {
+                            
                             $savedAnswers = array_map('current', Test::select('answer_id')->where(['student_id' => $testInfo->student->id, 'exam_id' => $testInfo->exam_id])->get()->toArray());
 
                             return view('tests.index', compact('testInfo', 'questions', 'savedAnswers'));
