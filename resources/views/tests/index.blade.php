@@ -46,7 +46,7 @@
             <h3>{{$key+1}}. {{$question->question}}.</h3>
             @if($question->image)<img src="{{asset('upload/questions/'. $question->image)}}">@endif
             <div class="row mb-3">
-                @forelse($question->answers as $index => $answer)
+                @forelse($question->answers->shuffle() as $index => $answer)
                 <div class="pl-4 col-sm-6 d-flex flex-row">
                     <input class="answer" data-question_id="{{$question->id}}" type="radio" @if(in_array($answer->id, $savedAnswers)) checked @endif class="d-block" name="{{$key}}check2" id="check" value="{{$answer->id}}">
                     <label class="d-block" for="check">{{$answer->answer}}.</label>
