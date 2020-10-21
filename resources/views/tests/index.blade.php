@@ -138,7 +138,7 @@
             var url = "{{ URL::to('exam-finish') }}/" + examId;
 
             $.get(url , function(data, status){
-                //location.reload();
+                location.reload();
             });
         }
 

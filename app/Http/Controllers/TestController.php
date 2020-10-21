@@ -45,7 +45,7 @@ class TestController extends BaseController
 
 
             $pageData = new stdClass();
-            $date = date('Y-m-d H:i:s');
+            $date = date('Y-m-d H:i:s a');
             $query = QuestionAssign::where('student_id', auth()->user()->id)->with('exam', 'student', 'questionPaper');
 
             $query->whereHas('exam', function ($q) use ($date){
@@ -76,13 +76,13 @@ class TestController extends BaseController
 
                             return view('tests.exam_info', compact('pageData'));
                         
-                        } else if ($testInfo->exam->exam_date == date('Y-m-d') AND (date('Y-m-d h:i:s a', strtotime($testInfo->exam->exam_start_date_time)) <= date('Y-m-d h:i:s a')) AND date('Y-m-d h:i:s a', strtotime($testInfo->exam->exam_end_date_time)) > date('Y-m-d h:i:s a') AND $testInfo->exam->exam_status == 'on_going') {
+                        } else if ($testInfo->exam->exam_date == date('Y-m-d') AND $testInfo->exam->exam_start_date_time <= date('Y-m-d H:i:s') AND $testInfo->exam->exam_end_date_time > date('Y-m-d H:i:s') AND $testInfo->exam->exam_status == 'on_going') {
                             
                             $savedAnswers = array_map('current', Test::select('answer_id')->where(['student_id' => $testInfo->student->id, 'exam_id' => $testInfo->exam_id])->get()->toArray());
 
                             return view('tests.index', compact('testInfo', 'questions', 'savedAnswers'));
                         } else {
-                            $pageData->examInfo = 'Exam will start ' . $testInfo->exam->exam_date . ' ' . date('h:i:s a', strtotime($testInfo->exam->start_time));
+                            $pageData->examInfo = 'Exam will start ' . $testInfo->exam->exam_date . ' ' . date('H:i:s a', strtotime($testInfo->exam->start_time));
 
                             return view('tests.exam_info', compact('pageData'));
                         }
