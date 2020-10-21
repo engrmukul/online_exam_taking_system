@@ -16,7 +16,6 @@ class CreateRolesMenusTable extends Migration
         Schema::create('roles_menus', function (Blueprint $table) {
             $table->foreignId('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->foreignId('menu_id')->references('id')->on('menus')->onDelete('cascade');
-            $table->primary(['role_id', 'menu_id']);
         });
     }
 
