@@ -161,7 +161,7 @@ class TestController extends BaseController
 
         $adminEmail = Exam::with('admin')->where('id', $examId)->first();
 
-        \Mail::to( $adminEmail->admin->email )->send(new \App\Mail\AnswerMail($details));
+       // \Mail::to( $adminEmail->admin->email )->send(new \App\Mail\AnswerMail($details));
 
         return true;
     }
