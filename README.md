@@ -29,7 +29,9 @@
  ## Student Activity
     Attend exam
 
+## User Guide
     
+[![Watch the video](http://rongtulibd.com/oets.png)](https://www.youtube.com/watch?v=kVkPTbeTrB8&feature=youtu.be)
 
 
 
