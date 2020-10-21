@@ -42,7 +42,7 @@
     <!-- QUESTION LIST -->
     <div class="wrapper wrapper-content questionWrapper">
         <div class="question-1">
-            @forelse($questions as $key => $question)
+            @forelse($questions->shuffle() as $key => $question)
             <h3>{{$key+1}}. {{$question->question}}.</h3>
             @if($question->image)<img src="{{asset('upload/questions/'. $question->image)}}">@endif
             <div class="row mb-3">
