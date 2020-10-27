@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\ResetPasswordFormRequest;
 use App\Models\User;
-use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
